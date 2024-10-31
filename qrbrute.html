@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>6-Digit QR Code Generator</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: Arial, sans-serif;
+    }
+    canvas {
+      margin-top: 20px;
+    }
+    button {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>6-Digit QR Code Generator</h1>
+  <p>Generating every possible 6-digit QR code.</p>
+  <canvas id="qrCanvas"></canvas>
+  <p id="codeDisplay">Code: 000000</p>
+  <button id="startButton">Start</button>
+  <button id="stopButton" disabled>Stop</button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <script>
+    let qr;
+    let currentCode = 0;
+    let interval;
+
+    // Initialize the QRious QR code generator
+    function initQR() {
+      qr = new QRious({
+        element: document.getElementById('qrCanvas'),
+        size: 200,
+      });
+    }
+
+    function updateQRCode() {
+      const code = String(currentCode).padStart(6, '0'); // Zero-pad the code to 6 digits
+      qr.value = code; // Set QR code value
+      document.getElementById('codeDisplay').textContent = 'Code: ' + code;
+      
+      currentCode++;
+      if (currentCode > 999999) {
+        clearInterval(interval);
+        alert("Completed all 6-digit combinations.");
+      }
+    }
+
+    document.getElementById('startButton').addEventListener('click', () => {
+      initQR();
+      interval = setInterval(updateQRCode, 25); // Update QR code every 100 ms
+      document.getElementById('startButton').disabled = true;
+      document.getElementById('stopButton').disabled = false;
+    });
+
+    document.getElementById('stopButton').addEventListener('click', () => {
+      clearInterval(interval);
+      document.getElementById('startButton').disabled = false;
+      document.getElementById('stopButton').disabled = true;
+    });
+  </script>
+</body>
+</html>
